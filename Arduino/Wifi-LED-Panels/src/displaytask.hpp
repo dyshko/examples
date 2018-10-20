@@ -19,6 +19,11 @@ using Strip = vector<vector<bool>>;
 class DisplayTask : public Task
 {
 public:
+    enum Font{
+        FONT7x5,
+        FONT8x8
+    };
+
    explicit DisplayTask();
    ~DisplayTask() {};
 
@@ -27,7 +32,9 @@ public:
 	DisplayTask(DisplayTask&& other) = delete;
 	DisplayTask& operator=(const DisplayTask& other) = delete;
 
-   void setText(const string& text);
+   void setFont(Font);
+   void setText(const String& text);
+   void setSpeed(int speed);
    void execute();
 
 private:
@@ -40,9 +47,18 @@ private:
 
    LEDMatrixDriver m_lmd;
 
-   Strip m_text;
+   Strip m_strip;
+   String m_text;
+   char m_fontBitmaps[128][8][8];
+   int m_fontWidth;
+   int m_speed;
+
 
    void setPixels(const vector<vector<bool>>&, int offset = 0);
+
+   void toGlyph(const char* glyph, char* x[8]);
+   void createBitmaps(const char font[][8], bool transpose); 
+   Strip fromWord(const String& word); 
 
 };
 

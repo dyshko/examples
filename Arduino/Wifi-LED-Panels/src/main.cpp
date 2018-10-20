@@ -12,7 +12,7 @@ ESP8266WebServer server(80);
 namespace {
 
 Scheduler                  taskScheduler;
-Tasks::DisplayTask         dispayTask;
+Tasks::DisplayTask         displayTask;
 }
 
 void handleRoot();
@@ -26,8 +26,8 @@ void setup()
 
    WiFi.softAP("AP", "AP-password");
 
-    taskScheduler.addTask( dispayTask );
-    dispayTask.enable();
+    taskScheduler.addTask( displayTask );
+    displayTask.enable();
 
 
    Serial.println(F("Setup completed"));
@@ -46,13 +46,30 @@ void handleRoot()
 {
     if (server.hasArg("text")){
         String s = server.arg("text");
-        dispayTask.setText(s.c_str());
+        displayTask.setText(s.c_str());
         Serial.println(s);
         server.send(200, "text/plain", "Got it!"); 
     }
-    else
-    {
-        Serial.println("No text provided");
-        server.send(200, "text/plain", "No text provided!"); 
+    if (server.hasArg("font")){
+        int s = server.arg("font").toInt();
+        switch (s)
+        {
+            case 0:
+            displayTask.setFont(Tasks::DisplayTask::FONT7x5);
+            break;
+            case 1:
+            displayTask.setFont(Tasks::DisplayTask::FONT8x8);
+            break;
+            default:
+            break;
+        }
+        Serial.println(s);
+        server.send(200, "text/plain", "Got it!");
+    }
+    if (server.hasArg("speed")){
+        int s = server.arg("speed").toInt();
+        displayTask.setSpeed(s);
+        Serial.println(s);
+        server.send(200, "text/plain", "Got it!");
     }
 }
