@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#include "snake.hpp"
+
 #define _TASK_SLEEP_ON_IDLE_RUN
 #define _TASK_STD_FUNCTION
 #include <TaskSchedulerDeclarations.h>
@@ -11,6 +13,8 @@ using namespace std;
 
 #include <functional>
 
+//#include <MD_Parola.h>
+//#include <MD_MAX72xx.h>
 
 namespace Tasks {
 
@@ -37,6 +41,9 @@ public:
    void setSpeed(int speed);
    void execute();
 
+   void setSnakeDir(int d);
+   
+
 private:
    static const int LEDMATRIX_WIDTH;
    static const int LEDMATRIX_HEIGHT;
@@ -52,7 +59,13 @@ private:
    char m_fontBitmaps[128][8][8];
    int m_fontWidth;
    int m_speed;
+//   MD_Parola m_parola;
+    Snake m_snake;
 
+    
+
+    
+   Strip fromSnake();
 
    void setPixels(const vector<vector<bool>>&, int offset = 0);
 

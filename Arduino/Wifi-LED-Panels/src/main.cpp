@@ -72,4 +72,9 @@ void handleRoot()
         Serial.println(s);
         server.send(200, "text/plain", "Got it!");
     }
+    if (server.hasArg("snake")){
+        int s = server.arg("snake").toInt();
+        displayTask.setSnakeDir(s);
+        server.send(200, "text/plain", "Got it!");
+    }
 }

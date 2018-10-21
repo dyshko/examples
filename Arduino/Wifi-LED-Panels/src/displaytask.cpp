@@ -24,15 +24,19 @@ const unsigned long DisplayTask::POLL_DELAY_MS = 100;
 DisplayTask::DisplayTask():
    Task(POLL_DELAY_MS , TASK_FOREVER, std::bind(&DisplayTask::execute, this)),
    m_lmd(LEDMATRIX_SEGMENTS, LEDMATRIX_CS_PIN),
-   m_speed(10)
+   m_speed(50),
+   m_snake(32, 8, analogRead(0))
+//   m_parola(MD_MAX72XX::ICSTATION_HW, LEDMATRIX_CS_PIN, 4)
 {
    m_lmd.setEnabled(true);
    m_lmd.setIntensity(LEDMATRIX_INTENSITY);
 
-   setFont(Font::FONT8x8);
+   setFont(Font::FONT7x5);
 
-   m_text = " 1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,./;'[]{}:\"<>?!@#$%^&*()\\|";
-   m_strip = fromWord(m_text);
+//   m_parola.begin();  // Start Parola
+
+//   m_parola.displayText("", PA_LEFT, 1000, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+   setText("1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,./;'[]{}:\"<>?!@#$%^&*()\\|");
 }
 
 void DisplayTask::setPixels(const Strip& img, int offset)
@@ -51,8 +55,19 @@ void DisplayTask::setPixels(const Strip& img, int offset)
 
 void DisplayTask::setText(const String& text)
 {
+//    char buff[text.length()+1];
+//    text.toCharArray(buff, text.length()+1);
+
     m_text = text;
     m_strip = fromWord(text);
+//    int speed;
+//    if (m_speed == 0)
+//        speed = 1000000;
+//    else
+//        speed = 2000/m_speed;
+//
+//    m_parola.setTextBuffer(buff);
+//    m_parola.setSpeed(speed);
 }
 
 void DisplayTask::setSpeed(int speed)
@@ -65,17 +80,28 @@ void DisplayTask::execute()
 {
     m_lmd.clear();
    
-    static int offset = 0;
+    // static int offset = 0;
 
-    if (m_speed == 0){
-        delay(1000);
-    } else{
-        delay(1000/abs(m_speed)); 
-        offset += (( m_speed > 0 ) ? 1 : -1);
-    }
+    // if (m_speed == 0){
+    //     delay(1000);
+    // } else{
+    //     delay(1000/abs(m_speed)); 
+    //     offset += (( m_speed > 0 ) ? 1 : -1);
+    // }
     
-    setPixels(m_strip, -offset);
+    // setPixels(m_strip, -offset);
+
+    delay(250);
+    Strip snake_board = fromSnake();
+    setPixels(snake_board);
+    m_snake.move();
+    
     m_lmd.display();
+
+//    if (m_parola.displayAnimate()) // If finished displaying message
+//    {
+//        m_parola.displayReset();  // Reset and display it again
+//    }
 }
 
 void DisplayTask::setFont(Font f)
@@ -126,6 +152,26 @@ Strip DisplayTask::fromWord(const String& word)
         }
     }
     return s;
+}
+
+Strip DisplayTask::fromSnake()
+{
+    Strip s = Strip(32, vector<bool>(8, false));
+
+    for (int i = 0; i < 8; ++i){
+        for (int j = 0; j < 32; ++j){
+            Snake::Cell c(j, i);
+            if (m_snake.cellFood(c))
+                s[j][i] = true;
+            else
+                s[j][i] = !m_snake.cellFree(c);
+        }
+    }
+    return s;
+}
+
+void DisplayTask::setSnakeDir(int d){
+    m_snake.setDir(static_cast<Snake::Dir>(d));
 }
 
 } // namespace Tasks
