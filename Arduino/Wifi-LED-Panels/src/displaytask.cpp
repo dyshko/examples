@@ -25,7 +25,9 @@ DisplayTask::DisplayTask():
    Task(POLL_DELAY_MS , TASK_FOREVER, std::bind(&DisplayTask::execute, this)),
    m_lmd(LEDMATRIX_SEGMENTS, LEDMATRIX_CS_PIN),
    m_speed(50),
-   m_snake(32, 8, analogRead(0))
+   m_snake(32, 8, analogRead(0)),
+   m_solver(&m_snake),
+   m_mode(SnakeAuto)
 //   m_parola(MD_MAX72XX::ICSTATION_HW, LEDMATRIX_CS_PIN, 4)
 {
    m_lmd.setEnabled(true);
@@ -75,27 +77,51 @@ void DisplayTask::setSpeed(int speed)
     m_speed = speed;
 }
 
+void DisplayTask::setMode(DisplayMode m)
+{
+    m_mode = m;
+}
+
 //! Update display
 void DisplayTask::execute()
 {
     m_lmd.clear();
+    
+    switch (m_mode){
+        case Image:
+        break;
+        case Text:
+        {
+            static int offset = 0;
+
+            if (m_speed == 0){
+                delay(1000);
+            } else {
+                delay(1000/abs(m_speed)); 
+                offset += (( m_speed > 0 ) ? 1 : -1);
+            }
+    
+            setPixels(m_strip, -offset);
+        }
+        break;
+        case SnakeManual:
+        {
+            delay(100);
+            Strip snake_board = fromSnake();
+            setPixels(snake_board);
+            m_snake.move();
+        }
+        break;
+        case SnakeAuto:
+        {
+            delay(100);
+            Strip snake_board = fromSnake();
+            setPixels(snake_board);
+            m_solver.move();
+        }
+        break;
+    }
    
-    // static int offset = 0;
-
-    // if (m_speed == 0){
-    //     delay(1000);
-    // } else{
-    //     delay(1000/abs(m_speed)); 
-    //     offset += (( m_speed > 0 ) ? 1 : -1);
-    // }
-    
-    // setPixels(m_strip, -offset);
-
-    delay(250);
-    Strip snake_board = fromSnake();
-    setPixels(snake_board);
-    m_snake.move();
-    
     m_lmd.display();
 
 //    if (m_parola.displayAnimate()) // If finished displaying message

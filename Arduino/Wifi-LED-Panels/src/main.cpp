@@ -45,6 +45,7 @@ void loop()
 void handleRoot()
 {
     if (server.hasArg("text")){
+        displayTask.setMode(Tasks::DisplayTask::Text);
         String s = server.arg("text");
         displayTask.setText(s.c_str());
         Serial.println(s);
@@ -75,6 +76,14 @@ void handleRoot()
     if (server.hasArg("snake")){
         int s = server.arg("snake").toInt();
         displayTask.setSnakeDir(s);
+        server.send(200, "text/plain", "Got it!");
+    }
+    if (server.hasArg("snakestart")){
+        displayTask.setMode(Tasks::DisplayTask::SnakeManual);
+        server.send(200, "text/plain", "Got it!");
+    }
+    if (server.hasArg("snakeauto")){
+        displayTask.setMode(Tasks::DisplayTask::SnakeAuto);
         server.send(200, "text/plain", "Got it!");
     }
 }

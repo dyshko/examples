@@ -2,7 +2,8 @@
 
 using namespace std;
 
-#include "snake.hpp"
+#include "snake.h"
+#include "snakesolver.h"
 
 #define _TASK_SLEEP_ON_IDLE_RUN
 #define _TASK_STD_FUNCTION
@@ -28,6 +29,13 @@ public:
         FONT8x8
     };
 
+    enum DisplayMode{
+        SnakeManual,
+        SnakeAuto,
+        Text,
+        Image
+    };
+
    explicit DisplayTask();
    ~DisplayTask() {};
 
@@ -36,43 +44,45 @@ public:
 	DisplayTask(DisplayTask&& other) = delete;
 	DisplayTask& operator=(const DisplayTask& other) = delete;
 
-   void setFont(Font);
-   void setText(const String& text);
-   void setSpeed(int speed);
-   void execute();
+    void setFont(Font);
+    void setText(const String& text);
+    void setSpeed(int speed);
+    void execute();
+    void setMode(DisplayMode m);
 
-   void setSnakeDir(int d);
+    void setSnakeDir(int d);
    
 
 private:
-   static const int LEDMATRIX_WIDTH;
-   static const int LEDMATRIX_HEIGHT;
-   static const int LEDMATRIX_SEGMENTS;
-   static const int LEDMATRIX_INTENSITY;
-   static const int LEDMATRIX_CS_PIN;
-   static const unsigned long POLL_DELAY_MS;
+    static const int LEDMATRIX_WIDTH;
+    static const int LEDMATRIX_HEIGHT;
+    static const int LEDMATRIX_SEGMENTS;
+    static const int LEDMATRIX_INTENSITY;
+    static const int LEDMATRIX_CS_PIN;
+    static const unsigned long POLL_DELAY_MS;
 
-   LEDMatrixDriver m_lmd;
+    LEDMatrixDriver m_lmd;
 
-   Strip m_strip;
-   String m_text;
-   char m_fontBitmaps[128][8][8];
-   int m_fontWidth;
-   int m_speed;
+    Strip m_strip;
+    String m_text;
+    char m_fontBitmaps[128][8][8];
+    int m_fontWidth;
+    int m_speed;
 //   MD_Parola m_parola;
+
     Snake m_snake;
+    SnakeSolver m_solver;
+
+    DisplayMode m_mode;    
 
     
+    Strip fromSnake();
 
-    
-   Strip fromSnake();
+    void setPixels(const vector<vector<bool>>&, int offset = 0);
 
-   void setPixels(const vector<vector<bool>>&, int offset = 0);
-
-   void toGlyph(const char* glyph, char* x[8]);
-   void createBitmaps(const char font[][8], bool transpose); 
-   Strip fromWord(const String& word); 
-
+    void toGlyph(const char* glyph, char* x[8]);
+    void createBitmaps(const char font[][8], bool transpose); 
+    Strip fromWord(const String& word);
 };
 
 } // namespace Tasks

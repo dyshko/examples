@@ -1,19 +1,27 @@
-#include "../src/snake.hpp"
+#include "../src/snake.h"
+#include "../src/snakesolver.h"
 #include <iostream>
 #include <vector>
 #include <chrono>
 #include <thread>
 
+#include <QProcess>
+
+#include <stdlib.h>
+
 using namespace std;
 
 using Strip = vector<vector<bool>>;
 
+#define WIDTH 32
+#define HEIGHT 8
+
 Strip fromSnake(Snake snake)
 {
-    Strip s = Strip(8, vector<bool>(8, false));
+    Strip s = Strip(WIDTH, vector<bool>(HEIGHT, false));
 
-    for (int i = 0; i < 8; ++i){
-        for (int j = 0; j < 8; ++j){
+    for (int i = 0; i < WIDTH; ++i){
+        for (int j = 0; j < HEIGHT; ++j){
             Snake::Cell c(j, i);
             if (snake.cellFood(c))
                 s[j][i] = true;
@@ -28,8 +36,8 @@ void print(Snake snake)
 {
     cout << "Snake:" << endl;
     Strip s = fromSnake(snake);
-    for (int i = 0; i < 8; ++i){
-        for (int j = 0; j < 8; ++j)
+    for (int i = 0; i < WIDTH; ++i){
+        for (int j = 0; j < HEIGHT; ++j)
         {
             cout << (s[j][i] ? '*' : ' ');
         }
@@ -40,30 +48,32 @@ void print(Snake snake)
 
 int main()
 {
-    Snake snake(8, 8);
+    Snake snake(HEIGHT, WIDTH, 0);
+    SnakeSolver ssolver(&snake);
     while (true){
+        system("cls");
         print(snake);
 
-        char c;
-        cin >> c;
-        switch (c)
-        {
-        case 'w':
-            snake.setDir(Snake::Dir::UP);
-            break;
-        case 'a':
-            snake.setDir(Snake::Dir::RIGHT);
-            break;
-        case 's':
-            snake.setDir(Snake::Dir::DONW);
-            break;
-        case 'd':
-            snake.setDir(Snake::Dir::LEFT);
-            break;
-        }
-        snake.move();
-        std::this_thread::sleep_for (std::chrono::seconds(0
-                                                          ));
+//        char c;
+//        cin >> c;
+//        switch (c)
+//        {
+//        case 'w':
+//            snake.setDir(Snake::Dir::UP);
+//            break;
+//        case 'a':
+//            snake.setDir(Snake::Dir::LEFT);
+//            break;
+//        case 's':
+//            snake.setDir(Snake::Dir::DOWN);
+//            break;
+//        case 'd':
+//            snake.setDir(Snake::Dir::RIGHT);
+//            break;
+//        }
+//        snake.move();
+
+        ssolver.move();
+        std::this_thread::sleep_for (std::chrono::milliseconds(10));
     }
-    std::cout << "Hello";
 }

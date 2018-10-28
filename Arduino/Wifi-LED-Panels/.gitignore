@@ -13,3 +13,6 @@
 *.o
 *.stash
 *.exe
+debug/*
+release/*
+*ui_*
