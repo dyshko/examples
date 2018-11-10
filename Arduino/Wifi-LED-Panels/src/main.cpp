@@ -49,7 +49,6 @@ void handleRoot()
         String s = server.arg("text");
         displayTask.setText(s.c_str());
         Serial.println(s);
-        server.send(200, "text/plain", "Got it!"); 
     }
     if (server.hasArg("font")){
         int s = server.arg("font").toInt();
@@ -65,25 +64,31 @@ void handleRoot()
             break;
         }
         Serial.println(s);
-        server.send(200, "text/plain", "Got it!");
     }
     if (server.hasArg("speed")){
         int s = server.arg("speed").toInt();
         displayTask.setSpeed(s);
         Serial.println(s);
-        server.send(200, "text/plain", "Got it!");
     }
-    if (server.hasArg("snake")){
-        int s = server.arg("snake").toInt();
-        displayTask.setSnakeDir(s);
-        server.send(200, "text/plain", "Got it!");
+    if (server.hasArg("button")){
+        if (displayTask.currentMode() == Tasks::DisplayTask::SnakeManual)
+        {
+            int s = server.arg("button").toInt();
+            displayTask.setSnakeDir(s);
+        } else if (displayTask.currentMode() == Tasks::DisplayTask::Runner)
+            displayTask.runnerJump();
     }
     if (server.hasArg("snakestart")){
         displayTask.setMode(Tasks::DisplayTask::SnakeManual);
-        server.send(200, "text/plain", "Got it!");
     }
     if (server.hasArg("snakeauto")){
         displayTask.setMode(Tasks::DisplayTask::SnakeAuto);
-        server.send(200, "text/plain", "Got it!");
     }
+    if (server.hasArg("runner")){
+        displayTask.setMode(Tasks::DisplayTask::Runner);
+    }
+    if (server.hasArg("runnerjump")){
+        displayTask.runnerJump();
+    }
+    server.send(200, "text/plain", "Got it!");
 }

@@ -32,7 +32,8 @@ public:
         Snake,
         SnakeAuto,
         Text,
-        Speed
+        Speed,
+        Runner
     };
 
     void saveCurrent();

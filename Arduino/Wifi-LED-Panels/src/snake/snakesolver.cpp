@@ -25,8 +25,6 @@ bool SnakeSolver::move()
     if (!m_snake)
         return false;
 
-    int width = m_snake->width();
-    int height = m_snake->height();
     Snake::Cell head = m_snake->head();
 
     m_snake->setDir(dirs[head.y][head.x]);

@@ -2,8 +2,9 @@
 
 using namespace std;
 
-#include "snake.h"
-#include "snakesolver.h"
+#include "snake/snake.h"
+#include "snake/snakesolver.h"
+#include "runner/runnergame.h"
 
 #define _TASK_SLEEP_ON_IDLE_RUN
 #define _TASK_STD_FUNCTION
@@ -33,7 +34,8 @@ public:
         SnakeManual,
         SnakeAuto,
         Text,
-        Image
+        Image,
+        Runner
     };
 
    explicit DisplayTask();
@@ -49,8 +51,10 @@ public:
     void setSpeed(int speed);
     void execute();
     void setMode(DisplayMode m);
+    DisplayMode currentMode() const {return m_mode;}
 
     void setSnakeDir(int d);
+    void runnerJump();
    
 
 private:
@@ -71,6 +75,7 @@ private:
 //   MD_Parola m_parola;
 
     Snake m_snake;
+    RunnerGame m_runner;
     SnakeSolver m_solver;
 
     DisplayMode m_mode;    

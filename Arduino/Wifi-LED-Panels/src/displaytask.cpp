@@ -26,8 +26,9 @@ DisplayTask::DisplayTask():
    m_lmd(LEDMATRIX_SEGMENTS, LEDMATRIX_CS_PIN),
    m_speed(50),
    m_snake(32, 8, analogRead(0)),
+   m_runner(8, 32, analogRead(0)),
    m_solver(&m_snake),
-   m_mode(SnakeAuto)
+   m_mode(Runner)
 //   m_parola(MD_MAX72XX::ICSTATION_HW, LEDMATRIX_CS_PIN, 4)
 {
    m_lmd.setEnabled(true);
@@ -120,6 +121,13 @@ void DisplayTask::execute()
             m_solver.move();
         }
         break;
+        case Runner:
+        {
+            delay(100);
+            setPixels(m_runner.view().getMat(true));
+            m_runner.move();
+        }
+        break;
     }
    
     m_lmd.display();
@@ -198,6 +206,11 @@ Strip DisplayTask::fromSnake()
 
 void DisplayTask::setSnakeDir(int d){
     m_snake.setDir(static_cast<Snake::Dir>(d));
+}
+
+void DisplayTask::runnerJump()
+{
+    m_runner.jump();
 }
 
 } // namespace Tasks

@@ -59,7 +59,21 @@
           </property>
          </spacer>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="autoSnake">
+          <property name="text">
+           <string>Solve Snake</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="playSnake">
+          <property name="text">
+           <string>Play Snake</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
          <widget class="QPushButton" name="runButton">
           <property name="text">
            <string>Run</string>
@@ -74,16 +88,9 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QPushButton" name="playSnake">
+         <widget class="QPushButton" name="runnerButton">
           <property name="text">
-           <string>Play Snake</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QPushButton" name="autoSnake">
-          <property name="text">
-           <string>Solve Snake</string>
+           <string>Play Runner</string>
           </property>
          </widget>
         </item>

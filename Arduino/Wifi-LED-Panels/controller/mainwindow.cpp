@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->clearButton, &QPushButton::pressed, ui->canvas, &PaletteEditor::clear);
     connect(ui->runButton, &QPushButton::pressed, this, [this](){sendRequest(Image);});
     connect(ui->playSnake, &QPushButton::pressed, this, [this](){sendRequest(Snake);});
+    connect(ui->runnerButton, &QPushButton::pressed, this, [this](){sendRequest(Runner);});
     connect(ui->autoSnake, &QPushButton::pressed, this, [this](){sendRequest(SnakeAuto);});
 }
 
@@ -92,8 +93,12 @@ void MainWindow::sendRequest(RequestType t)
         request = QString("http://")+IP+"/?text=Hello%20";
         break;
     }
+    case Runner:
+    {
+        request = QString("http://")+IP+"/?runner=0";
+        break;
     }
-
+    }
 
     mgr->get(QNetworkRequest(QUrl(request)));
     qDebug() << request;
@@ -128,7 +133,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event){
     connect(mgr,SIGNAL(finished(QNetworkReply*)),this,SLOT(onFinish(QNetworkReply*)));
     connect(mgr,SIGNAL(finished(QNetworkReply*)),mgr,SLOT(deleteLater()));
 
-    QString request = QString("http://")+IP+"/?snake=" + QString::number(i);
+    QString request = QString("http://")+IP+"/?button=" + QString::number(i);
 
     mgr->get(QNetworkRequest(QUrl(request)));
     qDebug() << request;
