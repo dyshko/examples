@@ -1,0 +1,6 @@
+*.o
+*release*
+*debug*
+*.user
+*Makefile*
+Makefile
